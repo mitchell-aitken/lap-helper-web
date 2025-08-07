@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lap Helper Web</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <body class="dark-mode">
+    <div id="container">
+        <div id="leftPanel">
+            <h1>Lap Helper Web</h1>
+            <div id="dropArea">Drag & Drop PDF Here</div>
+            <canvas id="pdfCanvas"></canvas>
+
+            <div class="controls">
+                <button onclick="copyToClipboard()">📋 Copy Times</button>
+                <button onclick="downloadTimes()">💾 Download</button>
+                <button onclick="restart()">🔄 Restart</button>
+                <button onclick="toggleTheme()">🌓 Theme</button>
+            </div>
+            <div class="controls" style="margin-top: 20px;">
+                <button onclick="prevPage()">◀ Previous</button>
+                <button onclick="nextPage()">Next ▶</button>
+                <span id="pageInfo"></span>
+                </div>
+        </div>
+
+        <div id="rightPanel">
+            <div id="parseControls">
+                <textarea id="pasteBox" placeholder="Paste your times list here..."></textarea>
+                <button onclick="parsePastedTimes()">📥 Parse Times</button>
+            </div>
+
+            <div class="inputs">
+                <input id="startInput" type="number" placeholder="Start" oninput="autoSaveLap()" style="font-size: 16px; padding: 6px; width: 100px;" />
+                <input id="endInput" type="number" placeholder="End" oninput="autoSaveLap()" style="font-size: 16px; padding: 6px; width: 100px;" />
+                <input id="bgInput" type="number" step="any" placeholder="Background" oninput="autoSaveLap()" style="font-size: 16px; padding: 6px; width: 120px;" />
+                <label><input id="commentOut" type="checkbox" onchange="autoSaveLap()" /> Comment Out</label>
+                <button onclick="showSplitLapPopup()">✂️ Split Lap</button>
+            </div>
+
+            <div class="adjustments">
+                <div class="group">
+                    <label>Adjust Start:</label>
+                    <button style="font-size: 16px; padding: 6px 12px; background-color: #2196f3; color: white;" onclick="adjust('start', 1)">+1</button>
+                    <button style="font-size: 16px; padding: 6px 12px; background-color: #2196f3; color: white;" onclick="adjust('start', -1)">-1</button>
+                    <button style="font-size: 16px; padding: 6px 12px; background-color: #2196f3; color: white;" onclick="adjust('start', 5)">+5</button>
+                </div>
+                <div class="group">
+                    <label>Adjust End:</label>
+                    <button style="font-size: 16px; padding: 6px 12px; background-color: #2196f3; color: white;" onclick="adjust('end', 1)">+1</button>
+                    <button style="font-size: 16px; padding: 6px 12px; background-color: #2196f3; color: white;" onclick="adjust('end', -1)">-1</button>
+                    <button style="font-size: 16px; padding: 6px 12px; background-color: #2196f3; color: white;" onclick="adjust('end', -5)">-5</button>
+                </div>
+                <div class="controls" style="margin-top: 20px;">
+                    <button onclick="prevPage()">◀ Previous</button>
+                    <button onclick="nextPage()">Next ▶</button>
+                    <span id="pageInfo"></span>
+                </div>
+                <ul id="timesList"></ul>
+            </div>
+        </div>
+    </div>
+
+<div id="splitPanel" style="display: none;">
+    <h3>Split Lap</h3>
+    <div id="splitInputs"></div>
+    <button onclick="addSplitPoint()">➕ Add More</button>
+    <button onclick="confirmSplitLap()">✅ Split</button>
+    <button onclick="closeSplitLapPopup()">❌ Cancel</button>
+</div>
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
