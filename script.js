@@ -189,15 +189,25 @@ function renderTimesList() {
 
 
 function parsePastedTimes() {
-    const lines = document.getElementById('pasteBox').value.split('\n');
+    const raw = document.getElementById('pasteBox').value;
+    const lines = raw
+        .replace(/all_times\d*\s*=\s*\[/g, '')  // remove header if present
+        .replace(/\]/g, ']')                    // normalize brackets
+        .replace(/\t/g, '')                     // remove tabs
+        .split('\n')                            // split into lines
+        .map(line => line.trim())               // trim each line
+        .filter(line => line && line !== ']');  // remove empty/closing lines
+
     const active = [];
     const commented = [];
 
-    for (const line of lines) {
-        const trimmed = line.trim();
-        if (trimmed.startsWith('all_times') || trimmed === ']' || trimmed === '],') continue;
+    for (let line of lines) {
+        // If line doesn't start with [, wrap it
+        if (!line.startsWith('[') && line.includes(',')) {
+            line = `[${line}]`;
+        }
 
-        const match = trimmed.match(/^(#)?\[(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\],?$/);
+        const match = line.match(/^(#)?\[(\d+),\s*(\d+)(?:,\s*([\d.]+))?\],?$/);
         if (match) {
             const comment = match[1] === '#';
             const start = parseInt(match[2]);
@@ -212,19 +222,20 @@ function parsePastedTimes() {
         }
     }
 
-    // Add pageIndex as 5th value
+    // Apply pageIndex as the fifth value
     const numberedActive = active.map((entry, i) => [...entry, i]);
     const numberedCommented = commented.map((entry, i) => [...entry, active.length + i]);
 
     siteTimes = numberedActive.concat(numberedCommented);
-
+    currentPage = 0;
     renderTimesList();
     showPage(currentPage);
 
-    // Show paste area only once
     const parseControls = document.getElementById('parseControls');
     if (parseControls) parseControls.style.display = 'none';
 }
+
+
 
 
 
